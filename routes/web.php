@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Middleware\AdminMiddleware; // <-- TAMBAHKAN INI
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 // ===== RUTE ADMIN (Terpisah dan dilindungi) =====
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
          ->name('admin.dashboard');
