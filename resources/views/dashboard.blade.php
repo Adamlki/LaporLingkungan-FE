@@ -43,9 +43,9 @@
                             </div>
                         </div>
                         <span class="block text-5xl font-extrabold text-green-600 mb-2">{{ $totalLaporan }}</span>
-                        <a href="{{ route('laporan.index') }}" class="text-sm font-bold text-green-600 hover:text-green-600 group-hover:underline">
-                            Lihat Semua Laporan &rarr;
-                        </a>
+                        <a href="{{ route('home') }}" class="text-sm font-medium text-green-600 hover:text-green-900 flex items-center">
+    Lihat Semua Laporan <span class="ml-1">&rarr;</span>
+</a>
                     </div>
                 </div>
 

@@ -50,9 +50,13 @@ class LaporanController extends Controller
     }
 
     // 🔹 Menampilkan detail laporan
+// 🔹 Menampilkan detail laporan
     public function show($id)
     {
+        // Cari laporan berdasarkan ID, jika tidak ketemu tampilkan 404
         $laporan = Laporan::findOrFail($id);
+
+        // Tampilkan view detail
         return view('laporan.show', compact('laporan'));
     }
 

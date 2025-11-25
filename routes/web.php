@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Middleware\AdminMiddleware; // <-- TAMBAHKAN INI
+use App\Http\Middleware\AdminMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,36 +13,34 @@ use App\Http\Middleware\AdminMiddleware; // <-- TAMBAHKAN INI
 |--------------------------------------------------------------------------
 */
 
-// ===== RUTE PUBLIK (Bisa diakses siapa saja) =====
+// ===== RUTE PUBLIK =====
 Route::get('/', [LaporanController::class, 'index'])->name('home');
 
 
-// ===== RUTE PENGGUNA TERAUTENTIKASI (USER BIASA) =====
-Route::middleware(['auth', 'verified'])->group(function () {
+// ===== RUTE USER (Hapus 'verified' agar tidak dicegat) =====
+Route::middleware(['auth'])->group(function () {
     
-    // Dashboard User
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Dashboard User (Hapus duplikatnya tadi)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Profil User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])->name('laporan.show');
+    // CRUD Laporan
+    // Nonaktifkan resource otomatis untuk 'show'
+Route::resource('laporan', LaporanController::class)->except(['show']);
 
-    // CRUD Laporan oleh User
-    Route::resource('laporan', LaporanController::class);
+// Buat rute manual dengan nama yang SANGAT BEDA
+Route::get('/cek-laporan/{id}', [LaporanController::class, 'show'])->name('laporan.cek_detail');
 });
 
 
-// ===== RUTE ADMIN (Terpisah dan dilindungi) =====
+// ===== RUTE ADMIN =====
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
-
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
          ->name('admin.dashboard');
-
-    // (Tambahkan rute admin lainnya di sini jika perlu)
 });
 
-
-// ===== RUTE OTENTIKASI (Login, Register, dll) =====
 require __DIR__.'/auth.php';
