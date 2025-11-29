@@ -45,11 +45,15 @@
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 group">
                         
                         
+                        
                         <?php if($laporan->foto): ?>
                             <div class="overflow-hidden h-48">
+                                
                                 <img src="<?php echo e(asset('storage/' . $laporan->foto)); ?>"
                                      alt="Foto Laporan <?php echo e($laporan->judul); ?>"
-                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                                     loading="lazy"
+                                     decoding="async">
                             </div>
                         <?php else: ?>
                             <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400 italic">
@@ -90,29 +94,38 @@
 
                             <hr class="my-4 border-gray-100">
 
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs mr-2">
-                                        <?php echo e(substr($laporan->user->name ?? 'X', 0, 1)); ?>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                            
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs mr-2">
+                                    <?php echo e(substr($laporan->user->name ?? 'X', 0, 1)); ?>
 
-                                    </div>
-                                    <span class="text-xs font-medium text-gray-600">
+                                </div>
+                                <div class="text-xs">
+                                    <p class="font-medium text-gray-700">
                                         <?php echo e($laporan->user->name ?? 'User Dihapus'); ?>
 
-                                    </span>
+                                    </p>
+                                    <p class="text-gray-400">
+                                        <?php echo e($laporan->created_at->diffForHumans()); ?>
+
+                                    </p>
                                 </div>
-                                
-                                
-
-
-<a href="<?php echo e(route('laporan.cek_detail', $laporan->id)); ?>"
-   class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition duration-200">
-    Lihat Detail
-    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-    </svg>
-</a>
                             </div>
+
+                            
+                            <a href="<?php echo e(route('laporan.baca', $laporan->id)); ?>"
+                               class="group flex items-center text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors duration-200">
+                                Lihat Detail
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+
+                        </div>
+                        
                         </div>
                     </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

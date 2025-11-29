@@ -16,24 +16,34 @@ use App\Http\Middleware\AdminMiddleware;
 // ===== RUTE PUBLIK =====
 Route::get('/', [LaporanController::class, 'index'])->name('home');
 
-
-// ===== RUTE USER (Hapus 'verified' agar tidak dicegat) =====
+// ===== RUTE USER (Login Diperlukan) =====
 Route::middleware(['auth'])->group(function () {
     
-    // Dashboard User (Hapus duplikatnya tadi)
+    // Dashboard & Profil (Biarkan seperti adanya)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Profil User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])->name('laporan.show');
-    // CRUD Laporan
-    // Nonaktifkan resource otomatis untuk 'show'
-Route::resource('laporan', LaporanController::class)->except(['show']);
 
-// Buat rute manual dengan nama yang SANGAT BEDA
-Route::get('/cek-laporan/{id}', [LaporanController::class, 'show'])->name('laporan.cek_detail');
+    // === RUTE LAPORAN MANUAL (PENTING!) ===
+    
+    // 1. Form Create
+    Route::get('/laporan/create', [LaporanController::class, 'create'])
+        ->name('laporan.create'); // Nama rute untuk membuka form
+    
+    // 2. Proses Simpan (INI YANG MEMPERBAIKI ERROR ANDA)
+    Route::post('/laporan', [LaporanController::class, 'store'])
+        ->name('web.laporan.store'); // <--- Nama ini harus cocok dengan di form Blade
+    
+    // 3. Detail
+   //Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])
+        //->name('laporan.show');
+    Route::get('/baca-laporan/{id}', [LaporanController::class, 'show'])->name('laporan.baca');
+    
+    // 4. Update & Delete
+    Route::get('/laporan/{laporan}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
+    Route::put('/laporan/{laporan}', [LaporanController::class, 'update'])->name('laporan.update');
+    Route::delete('/laporan/{laporan}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 });
 
 

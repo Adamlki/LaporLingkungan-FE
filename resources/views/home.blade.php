@@ -35,11 +35,15 @@
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 group">
                         
                         {{-- Foto laporan --}}
+                        {{-- Foto laporan --}}
                         @if($laporan->foto)
                             <div class="overflow-hidden h-48">
+                                {{-- PERBAIKAN: Tambahkan 'img' dan atribut lazy loading --}}
                                 <img src="{{ asset('storage/' . $laporan->foto) }}"
                                      alt="Foto Laporan {{ $laporan->judul }}"
-                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                                     loading="lazy"
+                                     decoding="async">
                             </div>
                         @else
                             <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400 italic">
@@ -78,27 +82,35 @@
 
                             <hr class="my-4 border-gray-100">
 
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs mr-2">
-                                        {{ substr($laporan->user->name ?? 'X', 0, 1) }}
-                                    </div>
-                                    <span class="text-xs font-medium text-gray-600">
-                                        {{ $laporan->user->name ?? 'User Dihapus' }}
-                                    </span>
+                        {{-- BATAS ATAS GANTI --}}
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                            
+                            {{-- Info User (Kiri) --}}
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs mr-2">
+                                    {{ substr($laporan->user->name ?? 'X', 0, 1) }}
                                 </div>
-                                
-                                {{-- File: resources/views/home.blade.php --}}
-
-{{-- GANTI KODE LAMA DENGAN INI --}}
-<a href="{{ route('laporan.cek_detail', $laporan->id) }}"
-   class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition duration-200">
-    Lihat Detail
-    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-    </svg>
-</a>
+                                <div class="text-xs">
+                                    <p class="font-medium text-gray-700">
+                                        {{ $laporan->user->name ?? 'User Dihapus' }}
+                                    </p>
+                                    <p class="text-gray-400">
+                                        {{ $laporan->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
                             </div>
+
+                            {{-- Tombol Lihat Detail (Kanan) --}}
+                            <a href="{{ route('laporan.baca', $laporan->id) }}"
+                               class="group flex items-center text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors duration-200">
+                                Lihat Detail
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+
+                        </div>
+                        {{-- BATAS BAWAH GANTI --}}
                         </div>
                     </div>
                 @empty

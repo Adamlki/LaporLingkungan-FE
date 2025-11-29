@@ -51,12 +51,15 @@ class LaporanController extends Controller
 
     // 🔹 Menampilkan detail laporan
 // 🔹 Menampilkan detail laporan
+// Ganti parameter menjadi $id (hapus 'Laporan $laporan')
     public function show($id)
     {
-        // Cari laporan berdasarkan ID, jika tidak ketemu tampilkan 404
+        // Debugging: Pastikan ID sampai sini
+        // dd("Masuk Controller dengan ID: " . $id); 
+
+        // Cari manual. Jika gagal, dia akan error 404 (Halaman Not Found), BUKAN redirect dashboard.
         $laporan = Laporan::findOrFail($id);
 
-        // Tampilkan view detail
         return view('laporan.show', compact('laporan'));
     }
 
