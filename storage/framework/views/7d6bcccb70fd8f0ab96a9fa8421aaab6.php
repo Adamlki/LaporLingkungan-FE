@@ -35,7 +35,7 @@
                 <?php endif; ?>
 
                 
-                <form action="<?php echo e(route('laporan.update', $laporan)); ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="<?php echo e(route('laporan.update', $laporan->id)); ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
                     <?php echo csrf_field(); ?>
                     <?php echo method_field('PUT'); ?> 
 
@@ -118,7 +118,7 @@ unset($__errorArgs, $__bag); ?>
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
@@ -329,7 +329,7 @@ unset($__errorArgs, $__bag); ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['name' => 'confirm-laporan-deletion','focusable' => true]); ?>
-                    <form method="post" action="<?php echo e(route('laporan.destroy', $laporan)); ?>" class="p-6">
+                    <form method="post" action="<?php echo e(route('laporan.destroy', $laporan->id)); ?>" class="p-6">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('delete'); ?>
 

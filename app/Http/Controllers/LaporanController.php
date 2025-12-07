@@ -9,20 +9,20 @@ use Illuminate\Support\Facades\Storage;
 
 class LaporanController extends Controller
 {
-    // 🔹 Menampilkan semua laporan di halaman utama
+    // Menampilkan semua laporan di halaman utama
     public function index()
     {
         $laporans = Laporan::latest()->paginate(6);
         return view('home', compact('laporans'));
     }
 
-    // 🔹 Menampilkan form membuat laporan baru
+    // Menampilkan form membuat laporan baru
     public function create()
     {
         return view('laporan.create');
     }
 
-    // 🔹 Menyimpan laporan baru ke database
+    // Menyimpan laporan baru ke database
     public function store(Request $request)
     {
         $request->validate([
@@ -36,7 +36,6 @@ class LaporanController extends Controller
             ? $request->file('foto')->store('foto_laporan', 'public')
             : null;
 
-        // ✅ Status default disesuaikan dengan enum di database
         Laporan::create([
             'user_id' => Auth::id(),
             'judul' => $request->judul,
@@ -49,69 +48,66 @@ class LaporanController extends Controller
         return redirect()->route('laporan.index')->with('success', 'Laporan berhasil dikirim!');
     }
 
-    // 🔹 Menampilkan detail laporan
-// 🔹 Menampilkan detail laporan
-// Ganti parameter menjadi $id (hapus 'Laporan $laporan')
+    // Menampilkan detail laporan
     public function show($id)
     {
-        // Debugging: Pastikan ID sampai sini
-        // dd("Masuk Controller dengan ID: " . $id); 
-
-        // Cari manual. Jika gagal, dia akan error 404 (Halaman Not Found), BUKAN redirect dashboard.
         $laporan = Laporan::findOrFail($id);
-
         return view('laporan.show', compact('laporan'));
     }
 
-    // 🔹 Menampilkan form edit laporan
+    // Menampilkan form edit laporan
     public function edit($id)
     {
         $laporan = Laporan::findOrFail($id);
         return view('laporan.edit', compact('laporan'));
     }
 
-    // 🔹 Update laporan
-    public function update(Request $request, Laporan $laporan)
-{
-    // Otorisasi akan mengecek policy yang sudah kita ubah
-    $this->authorize('update', $laporan);
+    // Update laporan
+    public function update(Request $request, $id)
+    {
+        // Cari laporan berdasarkan ID
+        $laporan = Laporan::findOrFail($id);
+        
+        // Cek apakah user berhak edit laporan ini
+        $this->authorize('update', $laporan);
 
-    // Aturan validasi dasar
-    $rules = [
-        'judul' => 'required|string|max:255',
-        'deskripsi' => 'required|string',
-        'lokasi' => 'required|string|max:255',
-        'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ];
+        // Validasi input
+        $rules = [
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'lokasi' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ];
 
-    // Tambahkan aturan validasi status HANYA JIKA user adalah admin
-    /** @var \App\Models\User|null $user */
-$user = Auth::user();
-
-if ($user && $user->isAdmin()) {
-    $rules['status'] = 'required|in:Dilaporkan,Diproses,Selesai Ditangani';
-}
-
-    // Jalankan validasi
-    $validated = $request->validate($rules);
-
-    // Proses upload foto (jika ada file baru)
-    if ($request->hasFile('foto')) {
-        // Hapus foto lama jika ada
-        if ($laporan->foto) {
-            Storage::disk('public')->delete($laporan->foto); 
+        // Jika user adalah admin, tambahkan validasi status
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user && $user->isAdmin()) {
+            $rules['status'] = 'required|in:Dilaporkan,Diproses,Selesai Ditangani';
         }
-        // Simpan file baru dan simpan path lengkapnya
-        $path = $request->file('foto')->store('fotos_laporan', 'public');
-        $validated['foto'] = $path;
+
+        // Validasi
+        $validated = $request->validate($rules);
+
+        // Proses upload foto baru (jika ada)
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama
+            if ($laporan->foto) {
+                Storage::disk('public')->delete($laporan->foto);
+            }
+            // Simpan foto baru
+            $validated['foto'] = $request->file('foto')->store('fotos_laporan', 'public');
+        }
+
+        // Update data laporan
+        $laporan->update($validated);
+
+        // Redirect ke halaman detail laporan dengan pesan sukses
+        return redirect()->route('laporan.baca', $laporan->id)
+                         ->with('success', 'Laporan berhasil diperbarui!');
     }
 
-    // Update laporan
-    $laporan->update($validated);
-
-    return redirect()->route('laporan.show', $laporan)->with('success', 'Laporan berhasil diperbarui!');
-}
-    // 🔹 Hapus laporan
+    // Hapus laporan
     public function destroy($id)
     {
         $laporan = Laporan::findOrFail($id);

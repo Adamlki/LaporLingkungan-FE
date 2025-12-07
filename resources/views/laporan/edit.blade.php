@@ -25,7 +25,7 @@
                 @endif
 
                 {{-- FORM EDIT LAPORAN --}}
-                <form action="{{ route('laporan.update', $laporan) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('laporan.update', $laporan->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     @method('PUT') {{-- Method spoofing untuk UPDATE --}}
 
@@ -43,7 +43,7 @@
                     <div>
                         <x-input-label for="deskripsi" value="{{ __('Deskripsi Detail Kejadian *') }}" />
                         <textarea id="deskripsi" name="deskripsi" rows="5" required
-                                  class="mt-1 block w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('deskripsi') border-red-500 @enderror"
+                                  class="mt-1 block w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('deskripsi') @enderror"
                                   placeholder="Jelaskan masalah, kapan terjadi, dan mengapa ini penting..."
                         >{{ old('deskripsi', $laporan->deskripsi) }}</textarea>
                         @error('deskripsi')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
@@ -112,7 +112,7 @@
 
                 {{-- Modal Konfirmasi Hapus (Sangat Direkomendasikan!) --}}
                 <x-modal name="confirm-laporan-deletion" focusable>
-                    <form method="post" action="{{ route('laporan.destroy', $laporan) }}" class="p-6">
+                    <form method="post" action="{{ route('laporan.destroy', $laporan->id) }}" class="p-6">
                         @csrf
                         @method('delete')
 
