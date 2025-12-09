@@ -8,7 +8,6 @@
 <?php $attributes = $attributes->except(\App\View\Components\GuestLayout::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <!-- Session Status -->
     <?php if (isset($component)) { $__componentOriginal7c1bf3a9346f208f66ee83b06b607fb5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal7c1bf3a9346f208f66ee83b06b607fb5 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.auth-session-status','data' => ['class' => 'mb-4','status' => session('status')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -30,10 +29,9 @@
 <?php unset($__componentOriginal7c1bf3a9346f208f66ee83b06b607fb5); ?>
 <?php endif; ?>
 
-    <form method="POST" action="<?php echo e(route('login')); ?>">
+    <form id="login-form">
         <?php echo csrf_field(); ?>
 
-        <!-- Email Address -->
         <div>
             <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
@@ -97,7 +95,6 @@
 <?php endif; ?>
         </div>
 
-        <!-- Password -->
         <div class="mt-4">
             <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
@@ -163,7 +160,6 @@
 <?php endif; ?>
         </div>
 
-        <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
@@ -203,6 +199,56 @@
 <?php endif; ?>
         </div>
     </form>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Stop form biar tidak reload halaman
+
+            // Ambil data input
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // URL API Backend (Port 8000)
+            const apiUrl = "http://127.0.0.1:8000/api/login";
+
+            try {
+                // Tembak API
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // --- INI BAGIAN PALING PENTING ---
+                    // Simpan Token yang dikasih Backend ke LocalStorage browser
+                    // Token ini kuncimu buat ambil data Laporan nanti
+                    localStorage.setItem('api_token', result.access_token || result.token); 
+                    
+                    alert("Login Berhasil! Mengalihkan ke Dashboard...");
+                    
+                    // Pindah halaman ke Dashboard Frontend
+                    window.location.href = "/dashboard"; 
+                } else {
+                    // Kalau password salah / email tidak ada
+                    alert("Login Gagal: " + (result.message || "Periksa email dan password Anda."));
+                    console.log(result);
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Gagal menghubungi server Backend. Pastikan port 8000 nyala.");
+            }
+        });
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal69dc84650370d1d4dc1b42d016d7226b)): ?>
@@ -212,5 +258,4 @@
 <?php if (isset($__componentOriginal69dc84650370d1d4dc1b42d016d7226b)): ?>
 <?php $component = $__componentOriginal69dc84650370d1d4dc1b42d016d7226b; ?>
 <?php unset($__componentOriginal69dc84650370d1d4dc1b42d016d7226b); ?>
-<?php endif; ?>
-<?php /**PATH C:\laragon\www\ProjectWEB\LaporLingkungan-FE\resources\views/auth/login.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\laragon\www\ProjectWEB\LaporLingkungan-FE\resources\views/auth/login.blade.php ENDPATH**/ ?>

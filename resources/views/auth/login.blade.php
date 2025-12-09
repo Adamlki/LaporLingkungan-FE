@@ -1,18 +1,15 @@
 <x-guest-layout>
-    <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form id="login-form">
         @csrf
 
-        <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
 
@@ -24,7 +21,6 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
@@ -44,4 +40,54 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Stop form biar tidak reload halaman
+
+            // Ambil data input
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // URL API Backend (Port 8000)
+            const apiUrl = "http://127.0.0.1:8000/api/login";
+
+            try {
+                // Tembak API
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // --- INI BAGIAN PALING PENTING ---
+                    // Simpan Token yang dikasih Backend ke LocalStorage browser
+                    // Token ini kuncimu buat ambil data Laporan nanti
+                    localStorage.setItem('api_token', result.access_token || result.token); 
+                    
+                    alert("Login Berhasil! Mengalihkan ke Dashboard...");
+                    
+                    // Pindah halaman ke Dashboard Frontend
+                    window.location.href = "/dashboard"; 
+                } else {
+                    // Kalau password salah / email tidak ada
+                    alert("Login Gagal: " + (result.message || "Periksa email dan password Anda."));
+                    console.log(result);
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Gagal menghubungi server Backend. Pastikan port 8000 nyala.");
+            }
+        });
+    </script>
 </x-guest-layout>

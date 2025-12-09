@@ -4,47 +4,52 @@
             <div class="flex">
                 {{-- Logo Aplikasi --}}
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
+                    <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-8 w-auto fill-current text-indigo-600 font-extrabold" />
                     </a>
-                    <span class="ml-2 text-xl font-extrabold text-gray-800 tracking-wide font-sans">Lapor Lingkungan</span> {{-- Pastikan menggunakan font-sans --}}
+                    <span class="ml-2 text-xl font-extrabold text-gray-800 tracking-wide font-sans">Lapor Lingkungan</span>
                 </div>
 
                 {{-- Navigasi Utama (Desktop) --}}
-                {{-- Navigasi Utama (Desktop) --}}
-<div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex items-center">
-    
-    {{-- Link Laporan (Home, untuk semua pengunjung) --}}
-    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
-        {{ __('Laporan') }}
-    </x-nav-link>
+                <div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex items-center">
+                    
+                    {{-- Link Laporan (Home) --}}
+                    <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.index')">
+                        {{ __('Laporan Warga') }}
+                    </x-nav-link>
 
-    @auth
-    {{-- Link Dashboard (Hanya untuk user login) --}}
-        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-            {{ __('Dashboard') }}
-        </x-nav-link>
-
-    {{-- ===== TAMBAHKAN LINK ADMIN DI SINI ===== --}}
-    @if(Auth::user()->isAdmin())
-        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-            {{ __('Admin Panel') }}
-        </x-nav-link>
-    @endif
-    {{-- ======================================= --}}
-
-    @endauth
-</div>
+                    {{-- MENU KHUSUS USER LOGIN (Diatur via JS) --}}
+                    <div id="desktop-auth-menu" class="hidden flex space-x-2 items-center h-full">
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        
+                        {{-- Link Admin (Nanti JS yang cek role, sementara disembunyikan) --}}
+                        {{-- <x-nav-link href="#" id="admin-link" class="hidden">Admin Panel</x-nav-link> --}}
+                    </div>
+                </div>
             </div>
 
-            {{-- Bagian Kanan (Auth Status) --}}
+            {{-- Bagian Kanan --}}
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                @auth
-                    {{-- DROPDOWN PROFIL (USER LOGIN) --}}
+                
+                {{-- OPSI 1: TAMPILAN BELUM LOGIN (GUEST) --}}
+                <div id="guest-menu" class="flex space-x-2">
+                    <a href="{{ route('login') }}" class="font-semibold text-gray-700 hover:text-indigo-600 transition duration-150 px-3 py-2 text-base">
+                        Masuk
+                    </a>
+                    <a href="{{ route('register') }}" class="font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition duration-150 px-4 py-2 text-base shadow-md">
+                        Daftar
+                    </a>
+                </div>
+
+                {{-- OPSI 2: TAMPILAN SUDAH LOGIN (AUTH) --}}
+                <div id="auth-menu" class="hidden">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center text-base font-semibold text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full px-4 py-2 transition duration-150 ease-in-out shadow-sm">
-                                <div class="mr-2">{{ Auth::user()->name }}</div>
+                                {{-- NAMA USER DARI JS --}}
+                                <div class="mr-2" id="nav-user-name">Pengguna</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -54,36 +59,19 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                Kelola Akun
-                            </div>
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
 
                             <div class="border-t border-gray-100"></div>
 
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                    <span class="text-red-600 font-semibold">{{ __('Log Out') }}</span>
-                                </x-dropdown-link>
-                            </form>
+                            {{-- LOGOUT MANUAL VIA JS --}}
+                            <button id="logout-btn" class="w-full text-left block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                <span class="text-red-600 font-semibold">{{ __('Log Out') }}</span>
+                            </button>
                         </x-slot>
                     </x-dropdown>
-                @else
-                    {{-- TOMBOL LOGIN DAN REGISTER (GUEST) - DIPERBAIKI --}}
-                    <a href="{{ route('login') }}" class="font-semibold text-gray-700 hover:text-indigo-600 transition duration-150 px-3 py-2 text-base">
-                        Masuk
-                    </a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="font-semibold text-gray-700 hover:text-indigo-600 transition duration-150 px-3 py-2 text-base">
-                        Daftar
-                        </a>
-                    @endif
-                @endguest
+                </div>
             </div>
 
             {{-- Tombol Hamburger (Mobile) --}}
@@ -99,53 +87,27 @@
     </div>
 
     {{-- Responsive Navigation Links (Mobile) --}}
-{{-- Responsive Navigation Links (Mobile) --}}
-<div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-    @auth
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        
+        {{-- MENU MOBILE UMUM --}}
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+            <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.index')">
                 {{ __('Laporan') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-
-            {{-- ===== TAMBAHKAN LINK ADMIN (MOBILE) DI SINI ===== --}}
-            @if(Auth::user()->isAdmin())
-                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                    {{ __('Admin Panel') }}
+            
+            {{-- MENU MOBILE AUTH (Akan ditampilkan JS) --}}
+            <div id="mobile-auth-links" class="hidden">
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
                 </x-responsive-nav-link>
-            @endif
-            {{-- =============================================== --}}
-
+            </div>
         </div>
 
-            <div class="pt-4 pb-1 border-t border-gray-200">
-                <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
-
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-responsive-nav-link :href="route('logout')"
-                                onclick="event.preventDefault(); this.closest('form').submit();">
-                            <span class="text-red-600 font-semibold">{{ __('Log Out') }}</span>
-                        </x-responsive-nav-link>
-                    </form>
-                </div>
-            </div>
-        @else
-            {{-- Bagian untuk Guest (Mobile) --}}
-            <div class="pt-2 pb-3 space-y-1">
-                <x-responsive-nav-link :href="route('home')">
-                    {{ __('Laporan') }}
-                </x-responsive-nav-link>
+        {{-- MENU MOBILE PROFILE / LOGIN --}}
+        <div class="pt-4 pb-1 border-t border-gray-200">
+            
+            {{-- Kalau Belum Login --}}
+            <div id="mobile-guest-menu">
                 <x-responsive-nav-link :href="route('login')">
                     {{ __('Masuk') }}
                 </x-responsive-nav-link>
@@ -153,6 +115,89 @@
                     {{ __('Daftar') }}
                 </x-responsive-nav-link>
             </div>
-        @endguest
+
+            {{-- Kalau Sudah Login --}}
+            <div id="mobile-auth-menu" class="hidden">
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-800" id="mobile-user-name">User</div>
+                    <div class="font-medium text-sm text-gray-500">Pengguna Aplikasi</div>
+                </div>
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-responsive-nav-link>
+                    <button id="mobile-logout-btn" class="w-full text-left block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out">
+                        {{ __('Log Out') }}
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    {{-- SCRIPT PENGENDALI NAVIGASI --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem('api_token');
+
+            // Elemen Desktop
+            const guestMenu = document.getElementById('guest-menu');
+            const authMenu = document.getElementById('auth-menu');
+            const desktopAuthLinks = document.getElementById('desktop-auth-menu');
+            const navUserName = document.getElementById('nav-user-name');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            // Elemen Mobile
+            const mobileGuestMenu = document.getElementById('mobile-guest-menu');
+            const mobileAuthMenu = document.getElementById('mobile-auth-menu');
+            const mobileAuthLinks = document.getElementById('mobile-auth-links');
+            const mobileUserName = document.getElementById('mobile-user-name');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+
+            if (token) {
+                // --- KONDISI SUDAH LOGIN ---
+                // Sembunyikan menu tamu
+                if(guestMenu) guestMenu.classList.add('hidden');
+                if(mobileGuestMenu) mobileGuestMenu.classList.add('hidden');
+
+                // Tampilkan menu user
+                if(authMenu) authMenu.classList.remove('hidden');
+                if(desktopAuthLinks) desktopAuthLinks.classList.remove('hidden');
+                
+                if(mobileAuthMenu) mobileAuthMenu.classList.remove('hidden');
+                if(mobileAuthLinks) mobileAuthLinks.classList.remove('hidden');
+
+                // Ambil Nama User (Opsional, biar cantik)
+                // Kita ambil dari localStorage kalau ada (biasanya disimpan pas login)
+                // Atau fetch API lagi (tapi biar cepet, kita biarkan default dulu atau ambil dari cache)
+                fetch("http://127.0.0.1:8000/api/user", {
+                    headers: { "Authorization": "Bearer " + token, "Accept": "application/json" }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(navUserName) navUserName.innerText = data.name;
+                    if(mobileUserName) mobileUserName.innerText = data.name;
+                })
+                .catch(err => console.log("Gagal load user nav"));
+
+            } else {
+                // --- KONDISI BELUM LOGIN ---
+                // Pastikan menu user tersembunyi
+                if(authMenu) authMenu.classList.add('hidden');
+                if(desktopAuthLinks) desktopAuthLinks.classList.add('hidden');
+            }
+
+            // --- FUNGSI LOGOUT ---
+            function handleLogout() {
+                if(confirm("Yakin ingin keluar?")) {
+                    // 1. Hapus Token
+                    localStorage.removeItem('api_token');
+                    // 2. Redirect ke Login
+                    window.location.href = "/login";
+                }
+            }
+
+            if(logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            if(mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
+        });
+    </script>
 </nav>
