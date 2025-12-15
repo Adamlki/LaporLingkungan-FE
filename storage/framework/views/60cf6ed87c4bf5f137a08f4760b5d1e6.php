@@ -209,7 +209,7 @@
             const password = document.getElementById('password').value;
 
             // URL API Backend (Port 8000)
-            const apiUrl = "http://127.0.0.1:8000/api/login";
+            const apiUrl = "http://localhost:8000/apilogin";
 
             try {
                 // Tembak API
@@ -228,8 +228,7 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    // --- INI BAGIAN PALING PENTING ---
-                    // Simpan Token yang dikasih Backend ke LocalStorage browser
+
                     // Token ini kuncimu buat ambil data Laporan nanti
                     localStorage.setItem('api_token', result.access_token || result.token); 
                     

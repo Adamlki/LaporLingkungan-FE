@@ -93,8 +93,9 @@
                     <p class="text-lg opacity-90">Setiap laporan Anda sangat berarti untuk Madiun yang lebih baik. Jangan ragu, buat laporan baru sekarang!</p>
                 </div>
                 {{-- Pastikan route ini ada di web.php, kalau error ganti jadi href="/laporan/create" --}}
-                <a href="#" 
-                   class="flex-shrink-0 inline-flex items-center px-10 py-4 bg-white border border-transparent rounded-full font-bold text-lg text-emerald-700 tracking-wide shadow-xl hover:bg-gray-100 hover:text-emerald-800 transition duration-150 transform hover:scale-[1.03] focus:ring-4 focus:ring-emerald-300">
+                {{-- KODE BARU (BENAR) --}}
+                     <a href="{{ route('laporan.create') }}" 
+                         class="flex-shrink-0 inline-flex items-center px-10 py-4 bg-white border border-transparent rounded-full font-bold text-lg text-emerald-700 tracking-wide shadow-xl hover:bg-gray-100 hover:text-emerald-800 transition duration-150 transform hover:scale-[1.03] focus:ring-4 focus:ring-emerald-300">
                     <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -117,10 +118,8 @@
             }
 
             // 2. URL API Backend
-            const apiUrlUser = "http://127.0.0.1:8000/api/user"; 
+            const apiUrlUser = "https://aweless-raisa-dutiable.ngrok-free.dev/api/user"; 
             
-            // Nanti kalau Backend sudah punya endpoint statistik, buka ini:
-            // const apiUrlStats = "http://127.0.0.1:8000/api/laporan/stats";
 
             try {
                 // --- AMBIL DATA USER ---
@@ -128,7 +127,8 @@
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + token,
-                        "Accept": "application/json"
+                        "Accept": "application/json",
+                        "ngrok-skip-browser-warning": "69420"
                     }
                 });
 

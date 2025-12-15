@@ -359,8 +359,10 @@
                 // Ambil Nama User (Opsional, biar cantik)
                 // Kita ambil dari localStorage kalau ada (biasanya disimpan pas login)
                 // Atau fetch API lagi (tapi biar cepet, kita biarkan default dulu atau ambil dari cache)
-                fetch("http://127.0.0.1:8000/api/user", {
-                    headers: { "Authorization": "Bearer " + token, "Accept": "application/json" }
+                fetch("https://aweless-raisa-dutiable.ngrok-free.dev/api/user", {
+                    headers: { "Authorization": "Bearer " + token,
+                    "Accept": "application/json",
+                    "ngrok-skip-browser-warning": "69420" }
                 })
                 .then(res => res.json())
                 .then(data => {
