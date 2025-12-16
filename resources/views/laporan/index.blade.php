@@ -1,155 +1,176 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-bold text-xl text-gray-800 leading-tight">
-                {{ __('Daftar Laporan Warga') }}
-            </h2>
-            {{-- Tombol Tambah Laporan --}}
-            <a href="{{ route('laporan.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-indigo-700 transition shadow-md">
-                + Buat Laporan Baru
-            </a>
-        </div>
+        <h2 class="font-bold text-3xl text-gray-900 leading-tight">
+            {{ __('Semua Laporan Warga') }}
+        </h2>
     </x-slot>
 
-    <div class="py-12 bg-gray-50 min-h-screen">
+    {{-- BACKGROUND GRADIENT (Sama seperti Home) --}}
+    <div class="py-12 bg-gradient-to-br from-green-50 via-white to-emerald-50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            {{-- Tombol Buat Laporan (Style Gradient Hijau) --}}
+            <div class="flex justify-end mb-8">
+                <a href="{{ route('laporan.create') }}" 
+                   class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-700 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition transform duration-200 ease-in-out">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Buat Laporan Baru
+                </a>
+            </div>
             
-            {{-- Loading State (Muncul saat mengambil data) --}}
-            <div id="loading-text" class="text-center text-gray-500 py-20">
-                <svg class="animate-spin h-10 w-10 mx-auto text-indigo-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            {{-- Loading State --}}
+            <div id="loading-text" class="flex flex-col items-center justify-center min-h-[50vh] text-gray-500">
+                <svg class="animate-spin h-16 w-16 mb-4 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <p class="text-lg font-medium">Sedang menghubungi server...</p>
+                <p class="text-lg font-semibold animate-pulse">Sedang mengambil data terbaru...</p>
             </div>
             
-            {{-- Container Data (Tempat Kartu Laporan Muncul) --}}
+            {{-- Container Data --}}
             <div id="laporan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
 
-            {{-- State Kosong (Kalau belum ada data) --}}
-            <div id="empty-state" class="hidden text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100">
-                <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                </svg>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">Belum ada laporan</h3>
-                <p class="mt-2 text-gray-500">Jadilah yang pertama melaporkan masalah lingkungan di sekitarmu.</p>
-                <div class="mt-6">
-                    <a href="{{ route('laporan.create') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg transition transform hover:scale-105">
-                        Buat Laporan Sekarang
-                    </a>
+            {{-- State Kosong --}}
+            <div id="empty-state" class="hidden col-span-full flex flex-col items-center justify-center py-12">
+                <div class="bg-gray-100 rounded-full p-6 mb-4">
+                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </div>
+                <h3 class="text-lg font-medium text-gray-900">Belum ada laporan</h3>
+                <p class="text-gray-500">Jadilah yang pertama melaporkan kondisi lingkunganmu!</p>
             </div>
 
         </div>
     </div>
 
-    {{-- SCRIPT JS PENGAMBIL DATA (FETCH API) --}}
+    {{-- SCRIPT JS (LOGIKA API TAPI OUTPUT HTML DISESUAIKAN) --}}
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
             const container = document.getElementById('laporan-container');
             const loadingText = document.getElementById('loading-text');
             const emptyState = document.getElementById('empty-state');
             
-            // Ambil token dari penyimpanan browser
             const token = localStorage.getItem('api_token');
+            const baseUrl = "https://aweless-raisa-dutiable.ngrok-free.dev"; 
+            const apiUrl = `${baseUrl}/api/laporan`; 
 
-            // --- KONFIGURASI URL (Sesuaikan dengan Ngrok Temanmu) ---
-            const apiUrl = "https://aweless-raisa-dutiable.ngrok-free.dev/api/laporan"; 
-            const storageUrl = "https://aweless-raisa-dutiable.ngrok-free.dev/storage/"; 
+            // Fungsi Helper untuk Waktu (Ago)
+            function timeSince(date) {
+                const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+                let interval = seconds / 31536000;
+                if (interval > 1) return Math.floor(interval) + " tahun lalu";
+                interval = seconds / 2592000;
+                if (interval > 1) return Math.floor(interval) + " bulan lalu";
+                interval = seconds / 86400;
+                if (interval > 1) return Math.floor(interval) + " hari lalu";
+                interval = seconds / 3600;
+                if (interval > 1) return Math.floor(interval) + " jam lalu";
+                interval = seconds / 60;
+                if (interval > 1) return Math.floor(interval) + " menit lalu";
+                return Math.floor(seconds) + " detik lalu";
+            }
 
             try {
-                // Tembak API Backend
                 const response = await fetch(apiUrl, {
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + token,
                         "Accept": "application/json",
-                        "ngrok-skip-browser-warning": "69420" // Mantra Anti Blokir Ngrok
+                        "ngrok-skip-browser-warning": "69420"
                     }
                 });
 
                 if (!response.ok) throw new Error("Gagal mengambil data");
 
                 const result = await response.json();
-                
-                // Ambil array datanya (kadang dibungkus 'data', kadang langsung array)
                 const laporanList = result.data || result; 
 
-                // Sembunyikan Loading
                 loadingText.style.display = 'none';
 
                 if (laporanList.length === 0) {
-                    // Kalau data kosong, tampilkan pesan kosong
                     emptyState.classList.remove('hidden');
                 } else {
-                    // Kalau ada data, Loop dan buat kartu HTML
                     laporanList.forEach(laporan => {
                         
-                        // Cek apakah ada foto? Kalau null pakai gambar default
+                        // Gambar
                         const fotoUrl = laporan.foto 
-                            ? storageUrl + laporan.foto 
+                            ? `${baseUrl}/storage/${laporan.foto}` 
                             : 'https://via.placeholder.com/400x300?text=No+Image';
                         
-                        // Tentukan Warna Status
-                        let statusBadge = '<span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 border border-gray-200">Dilaporkan</span>';
-                        
-                        if(laporan.status === 'Diproses') {
-                            statusBadge = '<span class="px-3 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-700 border border-yellow-200 flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span> Diproses</span>';
-                        } else if(laporan.status === 'Selesai' || laporan.status === 'Selesai Ditangani') {
-                            statusBadge = '<span class="px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700 border border-green-200 flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span> Selesai</span>';
+                        // Logic Warna Status (Disamakan dengan Home)
+                        let statusBadge = '';
+                        if(laporan.status === 'Selesai' || laporan.status === 'Selesai Ditangani') {
+                            statusBadge = 'bg-green-100 text-green-800 border border-green-200';
+                        } else if(laporan.status === 'Diproses') {
+                            statusBadge = 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+                        } else {
+                            statusBadge = 'bg-red-100 text-red-800 border border-red-200';
                         }
 
-                        // Buat Tanggal yang enak dibaca
-                        const tanggal = new Date(laporan.created_at).toLocaleDateString('id-ID', {
-                            day: 'numeric', month: 'long', year: 'numeric'
-                        });
+                        // Data User
+                        const userName = laporan.user ? laporan.user.name : 'Anonim';
+                        const userInitial = userName.charAt(0).toUpperCase();
+                        const waktuLalu = timeSince(laporan.created_at);
 
-                        // Template HTML Kartu
+                        // --- HTML TEMPLATE (PERSIS HOME.BLADE.PHP) ---
                         const cardHtml = `
-                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition duration-300 flex flex-col h-full group">
-                                <div class="h-56 w-full bg-gray-200 relative overflow-hidden">
-                                    <img src="${fotoUrl}" alt="Bukti Foto" class="w-full h-full object-cover transform transition duration-700 group-hover:scale-110">
-                                    <div class="absolute top-3 right-3">
-                                        ${statusBadge}
-                                    </div>
+                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 group flex flex-col h-full">
+                                
+                                <div class="h-48 overflow-hidden bg-gray-200 relative">
+                                    <img src="${fotoUrl}" alt="${laporan.judul}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy">
                                 </div>
+
                                 <div class="p-6 flex flex-col flex-grow">
-                                    <div class="flex items-center text-xs text-gray-400 mb-3">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        ${tanggal}
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-extrabold text-xl text-gray-800 line-clamp-1" title="${laporan.judul}">
+                                            <a href="/baca-laporan/${laporan.id}">${laporan.judul}</a>
+                                        </h3>
                                     </div>
                                     
-                                    <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1 hover:text-indigo-600 transition">
-                                        <a href="/baca-laporan/${laporan.id}">${laporan.judul}</a>
-                                    </h3>
-                                    
-                                    <p class="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">${laporan.deskripsi}</p>
-                                    
-                                    <div class="pt-4 border-t border-gray-50 flex items-center justify-between mt-auto">
-                                        <div class="flex items-center text-xs text-gray-500 font-medium bg-gray-50 px-2 py-1 rounded-md">
-                                            <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                            <span class="truncate max-w-[120px]">${laporan.lokasi}</span>
+                                    <p class="text-sm text-gray-600 mb-4 flex items-center">
+                                        <svg class="w-4 h-4 mr-1 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                        <span class="truncate">${laporan.lokasi}</span>
+                                    </p>
+
+                                    <div class="flex items-center justify-between mt-4">
+                                        <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full ${statusBadge}">
+                                            ${laporan.status}
+                                        </span>
+                                        <span class="text-xs text-gray-400">${waktuLalu}</span>
+                                    </div>
+
+                                    <hr class="my-4 border-gray-100">
+
+                                    <div class="mt-auto pt-2 flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs mr-2 border border-indigo-200">
+                                                ${userInitial}
+                                            </div>
+                                            <div class="text-xs">
+                                                <p class="font-medium text-gray-700">${userName}</p>
+                                                <p class="text-gray-400">${waktuLalu}</p>
+                                            </div>
                                         </div>
-                                        <a href="/baca-laporan/${laporan.id}" class="text-indigo-600 hover:text-indigo-800 text-sm font-bold flex items-center group-hover:underline">
-                                            Lihat Detail 
-                                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+
+                                        <a href="/baca-laporan/${laporan.id}" class="group flex items-center text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors duration-200">
+                                            Lihat Detail
+                                            <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                                            </svg>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         `;
                         
-                        // Masukkan kartu ke container
                         container.innerHTML += cardHtml;
                     });
                 }
 
             } catch (error) {
                 console.error("Error:", error);
-                loadingText.innerHTML = `<div class="text-red-500 font-semibold bg-red-50 p-4 rounded-lg">
-                    Gagal memuat data laporan.<br>
-                    <span class="text-sm font-normal text-red-400">Pastikan Backend/Ngrok Nyala & Internet Stabil.</span>
-                </div>`;
+                loadingText.innerHTML = `<div class="text-center"><p class="text-red-500 font-bold">Gagal memuat data.</p><p class="text-sm text-gray-500">Cek koneksi Ngrok Backend.</p></div>`;
             }
         });
     </script>

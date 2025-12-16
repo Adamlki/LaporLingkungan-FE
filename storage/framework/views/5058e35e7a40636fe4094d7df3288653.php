@@ -5,6 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
+        
+        
+        
+        <meta name="api-base-url" content="https://ganti-link-ini.ngrok-free.app/api">
+        
+
         <title><?php echo e(config('app.name', 'LAPOR LINGKUNGAN')); ?></title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">

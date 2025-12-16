@@ -209,7 +209,7 @@
             const password = document.getElementById('password').value;
 
             // URL API Backend (Port 8000)
-            const apiUrl = "http://localhost:8000/apilogin";
+            const apiUrl = "https://aweless-raisa-dutiable.ngrok-free.dev/api/login";
 
             try {
                 // Tembak API

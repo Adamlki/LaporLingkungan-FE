@@ -57,7 +57,7 @@
             const password_confirmation = document.getElementById('password_confirmation').value;
 
             // 3. Siapkan URL API (Sesuai Postman kamu)
-            const apiUrl = "http://localhost:8000/apiregister";
+            const apiUrl = "https://aweless-raisa-dutiable.ngrok-free.dev/api/register";
 
             try {
                 // 4. Tembak API menggunakan Fetch

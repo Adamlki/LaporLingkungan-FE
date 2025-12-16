@@ -27,11 +27,10 @@
                 </div>
                 <div>
                     <p class="text-2xl font-bold text-gray-800">
-                        
-                        Selamat Datang, <span id="user-name" class="text-green-600">Memuat...</span>!
+                        Selamat Datang di Portal Laporan Warga!
                     </p>
                     <p class="text-sm text-gray-500 mt-1">
-                        Ini ringkasan laporan lingkungan Anda. Mari jaga Madiun tetap bersih!
+                        Pantau kondisi lingkungan Madiun secara real-time. Mari jaga kebersihan bersama!
                     </p>
                 </div>
             </div>
@@ -51,10 +50,9 @@
                                 </svg>
                             </div>
                         </div>
-                        
                         <span id="stat-total" class="block text-5xl font-extrabold text-green-600 mb-2">-</span>
-                        <a href="#" class="text-sm font-medium text-green-600 hover:text-green-900 flex items-center">
-                            Lihat Semua Laporan <span class="ml-1">&rarr;</span>
+                        <a href="<?php echo e(route('laporan.create')); ?>" class="text-sm font-medium text-green-600 hover:text-green-900 flex items-center">
+                            Buat Laporan Baru <span class="ml-1">&rarr;</span>
                         </a>
                     </div>
                 </div>
@@ -71,7 +69,6 @@
                                 </svg>
                             </div>
                         </div>
-                        
                         <span id="stat-proses" class="block text-5xl font-extrabold text-yellow-600 mb-2">-</span>
                         <p class="text-sm font-medium text-gray-500">Menunggu Tindak Lanjut</p>
                     </div>
@@ -89,7 +86,6 @@
                                 </svg>
                             </div>
                         </div>
-                        
                         <span id="stat-selesai" class="block text-5xl font-extrabold text-green-600 mb-2">-</span>
                         <p class="text-sm font-medium text-gray-500">Masalah Sudah Teratasi</p>
                     </div>
@@ -103,9 +99,8 @@
                     <p class="text-lg opacity-90">Setiap laporan Anda sangat berarti untuk Madiun yang lebih baik. Jangan ragu, buat laporan baru sekarang!</p>
                 </div>
                 
-                
-                     <a href="<?php echo e(route('laporan.create')); ?>" 
-                         class="flex-shrink-0 inline-flex items-center px-10 py-4 bg-white border border-transparent rounded-full font-bold text-lg text-emerald-700 tracking-wide shadow-xl hover:bg-gray-100 hover:text-emerald-800 transition duration-150 transform hover:scale-[1.03] focus:ring-4 focus:ring-emerald-300">
+                 <a href="<?php echo e(route('laporan.create')); ?>" 
+                    class="flex-shrink-0 inline-flex items-center px-10 py-4 bg-white border border-transparent rounded-full font-bold text-lg text-emerald-700 tracking-wide shadow-xl hover:bg-gray-100 hover:text-emerald-800 transition duration-150 transform hover:scale-[1.03] focus:ring-4 focus:ring-emerald-300">
                     <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -119,53 +114,54 @@
     
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
-            // 1. Cek Token
+            // URL NGROK (Pastikan Link Ini Benar)
+            const baseUrl = "https://aweless-raisa-dutiable.ngrok-free.dev"; 
+            const apiUrlLaporan = `${baseUrl}/api/laporan`; 
+
+            // Header (Tanpa Token, Public Access)
+            const headers = {
+                "Accept": "application/json",
+                "ngrok-skip-browser-warning": "69420"
+            };
+
+            // Jika user login, tambahkan token (opsional, biar backend tau siapa yg request)
             const token = localStorage.getItem('api_token');
-            if (!token) {
-                alert("Anda belum login!");
-                window.location.href = "/login";
-                return;
+            if (token) {
+                headers["Authorization"] = "Bearer " + token;
             }
 
-            // 2. URL API Backend
-            const apiUrlUser = "https://aweless-raisa-dutiable.ngrok-free.dev/api/user"; 
-            
-
             try {
-                // --- AMBIL DATA USER ---
-                const response = await fetch(apiUrlUser, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                        "Accept": "application/json",
-                        "ngrok-skip-browser-warning": "69420"
-                    }
-                });
-
-                if (response.status === 401) {
-                    localStorage.removeItem('api_token');
-                    window.location.href = "/login";
-                    return;
-                }
-
-                const userData = await response.json();
+                // STEP 1: AMBIL DATA LAPORAN & HITUNG
+                const responseLaporan = await fetch(apiUrlLaporan, { method: "GET", headers: headers });
                 
-                // --- UPDATE TAMPILAN NAMA ---
-                // Kita cari elemen dengan ID "user-name" lalu isi teksnya
-                const nameElement = document.getElementById('user-name');
-                if(nameElement) {
-                    nameElement.innerText = userData.name;
-                }
+                if (responseLaporan.ok) {
+                    const resultLaporan = await responseLaporan.json();
+                    
+                    // Handle format data
+                    const listLaporan = resultLaporan.data || resultLaporan;
 
-                // --- UPDATE STATISTIK (SEMENTARA MANUAL DULU) ---
-                // Karena belum ada API statistik, kita isi angka 0 dulu biar rapi
-                // Nanti logika fetch-nya mirip kayak ambil user di atas
-                document.getElementById('stat-total').innerText = "0";
-                document.getElementById('stat-proses').innerText = "0";
-                document.getElementById('stat-selesai').innerText = "0";
+                    if (Array.isArray(listLaporan)) {
+                        // A. Update TOTAL
+                        document.getElementById('stat-total').innerText = listLaporan.length;
+
+                        // B. Update DIPROSES
+                        const diprosesCount = listLaporan.filter(item => item.status === 'Diproses').length;
+                        document.getElementById('stat-proses').innerText = diprosesCount;
+
+                        // C. Update SELESAI
+                        const selesaiCount = listLaporan.filter(item => 
+                            item.status === 'Selesai' || item.status === 'Selesai Ditangani'
+                        ).length;
+                        document.getElementById('stat-selesai').innerText = selesaiCount;
+                    }
+                } else {
+                    console.error("Gagal mengambil laporan:", responseLaporan.status);
+                    document.getElementById('stat-total').innerText = "ERR";
+                }
 
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Error Koneksi:", error);
+                document.getElementById('stat-total').innerText = "ERR";
             }
         });
     </script>

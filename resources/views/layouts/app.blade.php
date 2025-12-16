@@ -5,6 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        {{-- === KONFIGURASI API NGROK === --}}
+        {{-- GANTI link content di bawah ini dengan link Ngrok kamu yang aktif --}}
+        {{-- Pastikan diakhiri dengan /api --}}
+        <meta name="api-base-url" content="https://ganti-link-ini.ngrok-free.app/api">
+        {{-- ============================== --}}
+
         <title>{{ config('app.name', 'LAPOR LINGKUNGAN') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">

@@ -9,23 +9,30 @@
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
      <?php $__env->slot('header', null, []); ?> 
-        <h2 class="font-bold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             <?php echo e(__('Buat Laporan Baru')); ?>
 
         </h2>
      <?php $__env->endSlot(); ?>
 
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                
-                
-                <form id="laporan-form" enctype="multipart/form-data">
-                    <?php echo csrf_field(); ?>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
                     
                     
-                    <div class="mb-4">
-                        <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
+                    <div id="error-box" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong class="font-bold">Ada kesalahan!</strong>
+                        <ul id="error-list" class="mt-2 list-disc list-inside text-sm"></ul>
+                    </div>
+
+                    
+                    <form id="create-form" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+                        
+                        
+                        <div>
+                            <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => ['for' => 'judul','value' => __('Judul Laporan')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input-label'); ?>
@@ -45,16 +52,16 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
+                            <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'judul','class' => 'block mt-1 w-full','type' => 'text','name' => 'judul','required' => true,'placeholder' => 'Contoh: Sampah di Sungai']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'judul','class' => 'block mt-1 w-full','type' => 'text','name' => 'judul','required' => true,'autofocus' => true,'placeholder' => 'Contoh: Sampah menumpuk di pasar']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['id' => 'judul','class' => 'block mt-1 w-full','type' => 'text','name' => 'judul','required' => true,'placeholder' => 'Contoh: Sampah di Sungai']); ?>
+<?php $component->withAttributes(['id' => 'judul','class' => 'block mt-1 w-full','type' => 'text','name' => 'judul','required' => true,'autofocus' => true,'placeholder' => 'Contoh: Sampah menumpuk di pasar']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal18c21970322f9e5c938bc954620c12bb)): ?>
@@ -65,11 +72,11 @@
 <?php $component = $__componentOriginal18c21970322f9e5c938bc954620c12bb; ?>
 <?php unset($__componentOriginal18c21970322f9e5c938bc954620c12bb); ?>
 <?php endif; ?>
-                    </div>
+                        </div>
 
-                    
-                    <div class="mb-4">
-                        <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
+                        
+                        <div class="mt-4">
+                            <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => ['for' => 'deskripsi','value' => __('Deskripsi')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input-label'); ?>
@@ -89,12 +96,12 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                        <textarea id="deskripsi" name="deskripsi" rows="4" class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required placeholder="Jelaskan detail kejadian..."></textarea>
-                    </div>
+                            <textarea id="deskripsi" name="deskripsi" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4" required placeholder="Jelaskan detail kejadian..."></textarea>
+                        </div>
 
-                    
-                    <div class="mb-4">
-                        <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
+                        
+                        <div class="mt-4">
+                            <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => ['for' => 'lokasi','value' => __('Lokasi Kejadian')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input-label'); ?>
@@ -114,16 +121,16 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
+                            <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'lokasi','class' => 'block mt-1 w-full','type' => 'text','name' => 'lokasi','required' => true,'placeholder' => 'Jl. Mawar No. 12']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'lokasi','class' => 'block mt-1 w-full','type' => 'text','name' => 'lokasi','required' => true,'placeholder' => 'Nama Jalan / RT RW / Desa']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['id' => 'lokasi','class' => 'block mt-1 w-full','type' => 'text','name' => 'lokasi','required' => true,'placeholder' => 'Jl. Mawar No. 12']); ?>
+<?php $component->withAttributes(['id' => 'lokasi','class' => 'block mt-1 w-full','type' => 'text','name' => 'lokasi','required' => true,'placeholder' => 'Nama Jalan / RT RW / Desa']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal18c21970322f9e5c938bc954620c12bb)): ?>
@@ -134,20 +141,20 @@
 <?php $component = $__componentOriginal18c21970322f9e5c938bc954620c12bb; ?>
 <?php unset($__componentOriginal18c21970322f9e5c938bc954620c12bb); ?>
 <?php endif; ?>
-                    </div>
+                        </div>
 
-                    
-                    <div class="mb-6">
-                        <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
+                        
+                        <div class="mt-4">
+                            <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => ['for' => 'foto','value' => __('Bukti Foto')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => ['for' => 'foto','value' => __('Foto (Opsional)')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input-label'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['for' => 'foto','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(__('Bukti Foto'))]); ?>
+<?php $component->withAttributes(['for' => 'foto','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(__('Foto (Opsional)'))]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581)): ?>
@@ -158,25 +165,27 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                        <input id="foto" name="foto" type="file" accept="image/*" class="block mt-1 w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                    </div>
+                            <input id="foto" class="block mt-1 w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" type="file" name="foto" accept="image/*">
+                            <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG. Maksimal 2MB.</p>
+                        </div>
 
-                    
-                    <div class="flex items-center justify-end gap-4">
-                        <a href="<?php echo e(route('laporan.index')); ?>" class="text-gray-600 hover:text-gray-900">Batal</a>
-                        <?php if (isset($component)) { $__componentOriginald411d1792bd6cc877d687758b753742c = $component; } ?>
+                        
+                        <div class="flex items-center justify-end mt-4">
+                            <a href="<?php echo e(route('laporan.index')); ?>" class="text-gray-600 hover:text-gray-900 mr-4 text-sm font-medium">Batal</a>
+                            
+                            <?php if (isset($component)) { $__componentOriginald411d1792bd6cc877d687758b753742c = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald411d1792bd6cc877d687758b753742c = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.primary-button','data' => ['id' => 'btn-submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.primary-button','data' => ['id' => 'btn-submit','class' => 'ml-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('primary-button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['id' => 'btn-submit']); ?>
-                            <?php echo e(__('Kirim Laporan')); ?>
+<?php $component->withAttributes(['id' => 'btn-submit','class' => 'ml-4']); ?>
+                                <?php echo e(__('Kirim Laporan')); ?>
 
-                         <?php echo $__env->renderComponent(); ?>
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald411d1792bd6cc877d687758b753742c)): ?>
 <?php $attributes = $__attributesOriginald411d1792bd6cc877d687758b753742c; ?>
@@ -186,35 +195,45 @@
 <?php $component = $__componentOriginald411d1792bd6cc877d687758b753742c; ?>
 <?php unset($__componentOriginald411d1792bd6cc877d687758b753742c); ?>
 <?php endif; ?>
-                    </div>
-                </form>
-
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     
     <script>
-        document.getElementById('laporan-form').addEventListener('submit', async function(e) {
-            e.preventDefault(); // Stop reload halaman
+        document.getElementById('create-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
 
+            // Elemen UI
+            const btnSubmit = document.getElementById('btn-submit');
+            const errorBox = document.getElementById('error-box');
+            const errorList = document.getElementById('error-list');
+
+            // Reset Error
+            errorBox.classList.add('hidden');
+            errorList.innerHTML = '';
+            
+            // Loading State
+            const originalText = btnSubmit.innerText;
+            btnSubmit.innerText = "Mengirim...";
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-50');
+
+            // Cek Token
             const token = localStorage.getItem('api_token');
             if (!token) {
-                alert("Sesi habis. Login dulu.");
+                alert("Sesi habis. Silakan login kembali.");
                 window.location.href = "/login";
                 return;
             }
 
-            // Siapkan Data Form (Termasuk Gambar)
+            // Persiapan Data
             const formData = new FormData(e.target);
-
-            // Ubah tombol jadi loading
-            const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.innerText = "Mengirim...";
-            btnSubmit.disabled = true;
-
-            // URL NGROK TEMANMU
-            const apiUrl = "https://aweless-raisa-dutiable.ngrok-free.dev/api/laporan";
+            const baseUrl = "https://aweless-raisa-dutiable.ngrok-free.dev";
+            const apiUrl = `${baseUrl}/api/laporan`;
 
             try {
                 const response = await fetch(apiUrl, {
@@ -222,7 +241,8 @@
                     headers: {
                         "Authorization": "Bearer " + token,
                         "Accept": "application/json",
-                        "ngrok-skip-browser-warning": "69420" // Anti Blokir Ngrok
+                        "ngrok-skip-browser-warning": "69420"
+                        // Jangan set Content-Type manual untuk FormData!
                     },
                     body: formData
                 });
@@ -230,18 +250,36 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert("Laporan Berhasil Dikirim!");
-                    window.location.href = "/laporan"; // Pindah ke list laporan
+                    alert("✅ Laporan Berhasil Dikirim!");
+                    window.location.href = "/laporan"; // Redirect ke halaman list
                 } else {
-                    alert("Gagal: " + (result.message || "Cek data inputan."));
-                    btnSubmit.innerText = "Kirim Laporan";
-                    btnSubmit.disabled = false;
+                    // --- Handle Error Validasi (422) ---
+                    errorBox.classList.remove('hidden');
+                    
+                    if (result.errors) {
+                        for (const [key, messages] of Object.entries(result.errors)) {
+                            messages.forEach(msg => {
+                                const li = document.createElement('li');
+                                li.innerText = msg;
+                                errorList.appendChild(li);
+                            });
+                        }
+                    } else {
+                        const li = document.createElement('li');
+                        li.innerText = result.message || "Terjadi kesalahan server.";
+                        errorList.appendChild(li);
+                    }
+                    
+                    window.scrollTo(0,0);
                 }
             } catch (error) {
-                console.error(error);
-                alert("Gagal koneksi ke server Ngrok.");
-                btnSubmit.innerText = "Kirim Laporan";
+                console.error("Error:", error);
+                alert("⚠️ Gagal menghubungi server Ngrok. Periksa koneksi internet.");
+            } finally {
+                // Kembalikan Tombol
+                btnSubmit.innerText = originalText;
                 btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-50');
             }
         });
     </script>
